@@ -118,7 +118,10 @@ async function submitProduct(event) {
 function normalizeHeader(header) { return String(header || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, ''); }
 function parseNumber(value) {
   if (typeof value === 'number') return value;
-  const normalized = String(value ?? '').trim().replace(/\./g, '').replace(',', '.');
+  const normalizedValue = String(value ?? '').trim().replace(/[^\d,.-]/g, '');
+  const normalized = normalizedValue.includes(',')
+    ? normalizedValue.replace(/\./g, '').replace(',', '.')
+    : normalizedValue;
   return Number(normalized) || 0;
 }
 function readImportedProduct(row, index) {
