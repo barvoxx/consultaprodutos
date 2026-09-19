@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Consulta e gestão de produtos.">
+  <title>Produtos | Consulta e Cadastro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">P</div>
+        <div>
+          <strong>Barvox</strong>
+          <span>Gestão de produtos</span>
+        </div>
+      </div>
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a class="nav-item active" href="#produtos"><span class="nav-icon">▦</span> Produtos</a>
+        <a class="nav-item" href="#importar"><span class="nav-icon">⇧</span> Importar planilha</a>
+      </nav>
+      <div class="sidebar-footer">
+        <span class="status-dot"></span>
+        <span id="connectionLabel">Modo local ativo</span>
+      </div>
+    </aside>
+
+    <main class="main-content" id="produtos">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Catálogo</p>
+          <h1>Produtos</h1>
+        </div>
+        <button class="button button-primary" id="newProductButton" type="button"><span>＋</span> Novo produto</button>
+      </header>
+
+      <section class="summary-grid" aria-label="Resumo do catálogo">
+        <article class="summary-card accent-green">
+          <div class="summary-icon">▦</div>
+          <div><span>Total de produtos</span><strong id="totalProducts">0</strong></div>
+        </article>
+        <article class="summary-card accent-orange">
+          <div class="summary-icon">◷</div>
+          <div><span>Estoque disponível</span><strong id="totalStock">0</strong></div>
+        </article>
+        <article class="summary-card accent-blue">
+          <div class="summary-icon">R$</div>
+          <div><span>Valor em estoque</span><strong id="stockValue">R$ 0,00</strong></div>
+        </article>
+      </section>
+
+      <section class="toolbar" aria-label="Filtros de produtos">
+        <label class="search-field"><span>⌕</span><input id="searchInput" type="search" placeholder="Buscar por código ou descrição..." autocomplete="off"></label>
+        <label class="select-field"><span>Categoria</span><select id="categoryFilter"><option value="">Todas as categorias</option></select></label>
+        <button class="button button-ghost" id="clearFiltersButton" type="button">Limpar filtros</button>
+      </section>
+
+      <section class="table-section">
+        <div class="section-heading">
+          <div><h2>Catálogo de produtos</h2><p id="resultsLabel">0 produtos encontrados</p></div>
+          <button class="button button-outline" id="importButton" type="button"><span>⇧</span> Importar planilha</button>
+          <input id="fileInput" type="file" accept=".xlsx,.xls,.csv" hidden>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Código</th><th>Descrição</th><th>Categoria</th><th>Qtdade disponível</th><th>Custo médio unit.</th><th>Valor de venda</th><th aria-label="Ações"></th></tr></thead>
+            <tbody id="productsTableBody"></tbody>
+          </table>
+          <div class="empty-state" id="emptyState"><div class="empty-icon">⌁</div><h3>Nenhum produto encontrado</h3><p>Cadastre um produto ou importe sua planilha para começar.</p><button class="button button-primary" type="button" id="emptyAction">Cadastrar produto</button></div>
+        </div>
+      </section>
+
+      <section class="import-banner" id="importar">
+        <div class="import-art">⇧</div><div><h2>Já tem uma planilha?</h2><p>Importe seus produtos de uma só vez. Use as colunas: Código, Descrição, Categoria, Qtdade Disponível, Custo Médio Unit. e ValorVenda.</p></div><button class="button button-dark" id="bannerImportButton" type="button">Selecionar arquivo <span>→</span></button>
+      </section>
+      <footer>Barvox Produtos <span>•</span> Seus dados ficam sincronizados com o Firestore quando conectado.</footer>
+    </main>
+  </div>
+
+  <dialog id="productDialog">
+    <form method="dialog" id="productForm" class="dialog-card">
+      <div class="dialog-header"><div><p class="eyebrow">Catálogo</p><h2 id="dialogTitle">Novo produto</h2></div><button class="close-button" value="cancel" aria-label="Fechar">×</button></div>
+      <input id="editingId" type="hidden">
+      <div class="form-grid">
+        <label>Código<input id="codeInput" required maxlength="40" placeholder="Ex.: 001234"></label>
+        <label>Descrição<input id="descriptionInput" required maxlength="120" placeholder="Nome do produto"></label>
+        <label>Categoria<input id="categoryInput" required maxlength="60" placeholder="Ex.: Bebidas"></label>
+        <label>Qtdade disponível<input id="quantityInput" required type="number" min="0" step="1" placeholder="0"></label>
+        <label>Custo médio unit.<input id="costInput" required type="number" min="0" step="0.01" placeholder="0,00"></label>
+        <label>Valor de venda<input id="saleInput" required type="number" min="0" step="0.01" placeholder="0,00"></label>
+      </div>
+      <p class="form-error" id="formError" role="alert"></p>
+      <div class="dialog-actions"><button class="button button-ghost" value="cancel">Cancelar</button><button class="button button-primary" value="default" type="submit">Salvar produto</button></div>
+    </form>
+  </dialog>
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
